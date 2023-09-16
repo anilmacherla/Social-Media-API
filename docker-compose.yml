@@ -1,0 +1,25 @@
+version: "2"
+
+services:
+  social-media-api-server:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+        - neo4j
+    environment:
+        - SPRING_NEO4J_URI=bolt://neo4j:7687
+  neo4j:
+    image: neo4j:community
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/secret
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_dbms_shell_enabled=true
+    volumes:
+      - ./neo4j/plugins:/plugins
+      - ./neo4j/data:/data
+      - ./neo4j/import:/import
